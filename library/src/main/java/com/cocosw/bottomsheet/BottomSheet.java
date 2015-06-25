@@ -97,6 +97,8 @@ public class BottomSheet extends Dialog implements DialogInterface {
 
     private Typeface mTypeface;
 
+    private View mTopView;
+
     private ImageView icon;
 
     private int limit = -1;
@@ -106,6 +108,8 @@ public class BottomSheet extends Dialog implements DialogInterface {
     private ActionMenu menuItem;
     private ActionMenu actions;
     private OnDismissListener dismissListener;
+
+    private boolean mAddedTopView;
 
     BottomSheet(Context context) {
         super(context, R.style.BottomSheet_Dialog);
@@ -118,9 +122,15 @@ public class BottomSheet extends Dialog implements DialogInterface {
 
     @SuppressWarnings("WeakerAccess")
     BottomSheet(Context context, int theme, Typeface typeface) {
+        this(context, theme, typeface, null);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    BottomSheet(Context context, int theme, Typeface typeface, View topView) {
         super(context, theme);
 
         mTypeface = typeface;
+        mTopView = topView;
 
         TypedArray a = getContext()
                 .obtainStyledAttributes(null, R.styleable.BottomSheet, R.attr.bottomSheetStyle, 0);
@@ -311,12 +321,23 @@ public class BottomSheet extends Dialog implements DialogInterface {
         }
 
         final TextView title = (TextView) mDialogView.findViewById(R.id.bottom_sheet_title);
+        final LinearLayout rowContainer = (LinearLayout) mDialogView
+                .findViewById(R.id.row_container);
+
         if (builder.title != null) {
             title.setVisibility(View.VISIBLE);
             title.setText(builder.title);
         }
+
         if (mTypeface != null) {
             title.setTypeface(mTypeface);
+        }
+
+        if (mTopView != null && !mAddedTopView) {
+            mAddedTopView = true;
+            rowContainer.addView(mTopView, 1,
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         icon = (ImageView) mDialogView.findViewById(R.id.bottom_sheet_title_image);
@@ -631,6 +652,8 @@ public class BottomSheet extends Dialog implements DialogInterface {
 
         private Typeface typeface;
 
+        private View topView;
+
 
         /**
          * Constructor using a context for this builder and the {@link com.cocosw.bottomsheet.BottomSheet} it creates.
@@ -901,7 +924,7 @@ public class BottomSheet extends Dialog implements DialogInterface {
          */
         @SuppressLint("Override")
         public BottomSheet build() {
-            BottomSheet dialog = new BottomSheet(context, theme, typeface);
+            BottomSheet dialog = new BottomSheet(context, theme, typeface, topView);
             dialog.builder = this;
             return dialog;
         }
@@ -930,6 +953,11 @@ public class BottomSheet extends Dialog implements DialogInterface {
 
         public Builder typeface(Typeface typeface) {
             this.typeface = typeface;
+            return this;
+        }
+
+        public Builder topView(View topView) {
+            this.topView = topView;
             return this;
         }
     }
