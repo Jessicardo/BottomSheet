@@ -329,6 +329,10 @@ public class BottomSheet extends Dialog implements DialogInterface {
             title.setText(builder.title);
         }
 
+        if (builder.titleColor != 0) {
+            title.setTextColor(builder.titleColor);
+        }
+
         if (mTypeface != null) {
             title.setTypeface(mTypeface);
         }
@@ -652,6 +656,8 @@ public class BottomSheet extends Dialog implements DialogInterface {
 
         private Typeface typeface;
 
+        private int titleColor;
+
         private View topView;
 
 
@@ -937,6 +943,11 @@ public class BottomSheet extends Dialog implements DialogInterface {
          */
         public Builder title(CharSequence title) {
             this.title = title;
+            return this;
+        }
+
+        public Builder titleColor(int titleColor) {
+            this.titleColor = titleColor;
             return this;
         }
 
